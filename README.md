@@ -127,26 +127,6 @@ Feature: Taxa de Retenção nos Primeiros 20 Pedidos
     And o entregador deve ser notificado sobre o incentivo no app
 ```
 
-&emsp;&emsp;Os steps para alocação do entregador são implementados em Python da seguinte maneira:
-
-```python
-from behave import given, when, then
-
-@given("o sistema inicia a busca por um entregador disponível")
-def step_given_inicio_busca(context):
-    context.tempo_busca = 0
-    context.entregador_encontrado = False
-
-@when("o sistema encontra um entregador antes de 15 minutos")
-def step_when_entregador_encontrado(context):
-    if context.tempo_busca < 15:
-        context.entregador_encontrado = True
-
-@then("o sistema deve alocar o entregador para a entrega")
-def step_then_alocar_entregador(context):
-    assert context.entregador_encontrado == True, "Erro: Nenhum entregador foi encontrado a tempo."
-```
-
 ## Execução dos Testes
 &emsp;&emsp;Para rodar os testes automatizados, é utilizado o seguinte comando:
 
