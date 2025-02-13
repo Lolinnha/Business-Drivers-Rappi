@@ -87,3 +87,85 @@ workspace "Tempo Máximo para Encontrar um Entregador em 15 minutos" "Fluxo de a
   <img src="./images/diagrama-alocacao-entregadores.png" alt="Alocação dos Entregadores" width="100%">
   <sup>Fonte: Anna Aragão (2025)</sup>
 </div>
+
+# Testes Automatizados
+
+## Estratégia de Testes
+
+&emsp;&emsp;A estratégia de testes para o Mapa de Business Drivers foca na automação de cenários críticos usando Behavior-Driven Development (BDD). A abordagem utiliza a linguagem **Gherkin** para descrever os cenários de teste de forma legível, permitindo uma comunicação eficiente entre desenvolvedores e stakeholders. 
+
+&emsp;&emsp;Os testes são executados com a ferramenta **Behave**, que interpreta os arquivos escritos em Gherkin e os conecta com implementações em **Python**.
+
+## Estrutura dos Testes
+&emsp;&emsp;Os testes seguem o padrão **Given-When-Then**, garantindo uma estrutura bem definida para cada cenário:
+
+- **Given**: Define o estado inicial ou pré-condições para a execução do teste.
+- **When**: Descreve a ação realizada pelo sistema ou pelo usuário.
+- **Then**: Define o resultado esperado após a ação.
+
+## Implementação dos Testes
+&emsp;&emsp;Os cenários de teste são escritos em arquivos `.feature` e vinculados a steps implementados em Python. Abaixo temos dois exemplos diferentes de Features seguidas se seus cenários e steps:
+
+```gherkin
+Feature: Alocação de Entregadores
+
+  Scenario: Encontrar um entregador dentro do tempo máximo
+    Given o sistema inicia a busca por um entregador disponível
+    When o sistema encontra um entregador antes de 15 minutos
+    Then o sistema deve alocar o entregador para a entrega
+```
+
+```gherkin
+Feature: Taxa de Retenção nos Primeiros 20 Pedidos
+
+  Scenario: Enviar incentivo apenas quando o entregador atinge 20 pedidos
+    Given um entregador cadastrado no sistema
+    And o entregador já completou 19 pedidos
+    When o entregador realiza mais um pedido com sucesso
+    Then o sistema deve registrar o 20º pedido no banco de dados
+    And o sistema deve enviar um incentivo para o entregador
+    And o entregador deve ser notificado sobre o incentivo no app
+```
+
+&emsp;&emsp;Os steps para alocação do entregador são implementados em Python da seguinte maneira:
+
+```python
+from behave import given, when, then
+
+@given("o sistema inicia a busca por um entregador disponível")
+def step_given_inicio_busca(context):
+    context.tempo_busca = 0
+    context.entregador_encontrado = False
+
+@when("o sistema encontra um entregador antes de 15 minutos")
+def step_when_entregador_encontrado(context):
+    if context.tempo_busca < 15:
+        context.entregador_encontrado = True
+
+@then("o sistema deve alocar o entregador para a entrega")
+def step_then_alocar_entregador(context):
+    assert context.entregador_encontrado == True, "Erro: Nenhum entregador foi encontrado a tempo."
+```
+
+## Execução dos Testes
+&emsp;&emsp;Para rodar os testes automatizados, é utilizado o seguinte comando:
+
+```sh
+behave
+```
+
+&emsp;&emsp;Isso executará todos os arquivos `.feature` localizados dentro do diretório `features/`. Abaixo temos todos os testes validados e executados com sucesso
+
+<div align="center">
+  <sub>Figura 3: Testes Automatizados</sub>
+  <img src="./images/testes.png" alt="Testes Automatizados" width="100%">
+  <sup>Fonte: Anna Aragão (2025)</sup>
+</div>
+
+# Conclusão
+
+&emsp;&emsp;Além dos benefícios técnicos, a otimização do tempo de alocação dos entregadores gera um impacto social significativo. Reduzir o tempo de espera significa mais entregas em menos tempo, o que aumenta a renda dos entregadores e melhora a experiência dos consumidores. 
+
+&emsp;&emsp;No entanto, essa otimização também pode trazer desafios. Com um ritmo mais acelerado de alocações, os entregadores podem sentir uma maior pressão para cumprir mais pedidos em menos tempo, o que pode afetar seu bem-estar e segurança no trânsito. 
+
+&emsp;&emsp;Portanto, embora os avanços tecnológicos melhorem a eficiência e tragam benefícios claros, é essencial equilibrar essa evolução com políticas que garantam condições de trabalho justas e sustentáveis para os entregadores.
